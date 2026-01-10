@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+  title String @db.VarChar(30)
+  // String default mapping in postgres is text
+  content String 
+  uploadedAt DateTime @default(now())
+  published Boolean @default(false)
+  comments Comment[]
+  author Author @relation(fields: [authorId], references: [id])
+  authorId Int
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  content String @db.VarChar(300)
+  uploadedAt DateTime @default(now())
+  post Post @relation(fields: [postId], references: [id])
+  postId Int
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @db.VarChar(20) @unique
+  hash String @db.Char(60)
+  role Role @default(USER)
+  author Author?
+  comments Comment[]
+}
+
+model Author {
+  // Uses the user id for this author-specific id
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [id], references: [id])
+
+  posts Post[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
