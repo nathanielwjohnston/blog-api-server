@@ -54,5 +54,5 @@ model Author {
 
 enum Role {
   USER
-  ADMIN
+  AUTHOR
 }
