@@ -9,7 +9,7 @@ export async function getPosts(req, res, next) {
     next(error);
   }
 }
-export async function getPost(req, res) {
+export async function getPost(req, res, next) {
   const { id } = req.params;
 
   try {
@@ -52,7 +52,7 @@ export async function editComment(req, res, next) {
     next(error);
   }
 }
-export async function deleteComment(req, res) {
+export async function deleteComment(req, res, next) {
   const { id } = req.params;
 
   try {

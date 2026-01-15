@@ -4,13 +4,13 @@ import express from "express";
 const app = express();
 
 import userRouter from "./routes/userRouter.js";
-// import authorRouter from "./routes/authorRouter.js";
+import authorRouter from "./routes/authorRouter.js";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/user-api", userRouter);
-// app.use("/author-api", authorRouter);
+app.use("/author-api", authorRouter);
 
 const port = process.env.PORT || 8080;
 
