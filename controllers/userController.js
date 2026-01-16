@@ -1,4 +1,45 @@
 import { prisma } from "../lib/prisma.js";
+import passport from "passport";
+import jwt from "jsonwebtoken";
+import { generateHash } from "../lib/passwordUtils.js";
+
+export async function register(req, res, next) {
+  const { username, password } = req.body;
+
+  const pwHash = await generateHash(password);
+
+  try {
+    const user = await prisma.user.create({
+      data: {
+        username,
+        hash: pwHash,
+      },
+    });
+    const { hash, ...newUser } = user;
+    return res.json(newUser);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function login(req, res, next) {
+  // Local strategy is used for log in, after which
+  // a jwt token is created to be used for future requests
+  // until it has expired
+
+  // authenticate returns a function, this syntax
+  // just enables us to call that function
+  // with req, res, next
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.status(401).json({ error: info.message });
+    const opts = {};
+    opts.expiresIn = 600;
+    const secret = process.env.JWT_SECRET;
+    const token = jwt.sign({ id: user.id }, secret, opts);
+    return res.json({ message: "Auth success", token });
+  })(req, res, next);
+}
 
 export async function getPosts(req, res, next) {
   try {
@@ -9,6 +50,7 @@ export async function getPosts(req, res, next) {
     next(error);
   }
 }
+
 export async function getPost(req, res, next) {
   const { id } = req.params;
 
@@ -21,6 +63,7 @@ export async function getPost(req, res, next) {
     next(error);
   }
 }
+
 export async function createComment(req, res, next) {
   const comment = req.body;
   console.log(comment);
@@ -35,6 +78,7 @@ export async function createComment(req, res, next) {
     next(error);
   }
 }
+
 export async function editComment(req, res, next) {
   const { id } = req.params;
   const comment = req.body;
@@ -52,6 +96,7 @@ export async function editComment(req, res, next) {
     next(error);
   }
 }
+
 export async function deleteComment(req, res, next) {
   const { id } = req.params;
 

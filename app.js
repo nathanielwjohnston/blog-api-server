@@ -3,11 +3,17 @@ import "dotenv/config";
 import express from "express";
 const app = express();
 
+import passport from "passport";
+import "./config/localStrategy.js";
+import "./config/jwtStrategy.js";
+
 import userRouter from "./routes/userRouter.js";
 import authorRouter from "./routes/authorRouter.js";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(passport.initialize());
 
 app.use("/user-api", userRouter);
 app.use("/author-api", authorRouter);
