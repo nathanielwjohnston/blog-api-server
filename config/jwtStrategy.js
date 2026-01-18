@@ -20,7 +20,7 @@ const strategy = new JwtStrategy(opts, async (jwt_payload, done) => {
     },
   });
   if (user) {
-    return done(null, true);
+    return done(null, user);
   } else {
     return done(null, false);
   }

@@ -1,24 +1,55 @@
 import { Router } from "express";
-const authorRouter = Router();
+import passport from "passport";
 
 import * as userController from "../controllers/userController.js";
 import * as authorController from "../controllers/authorController.js";
+import {
+  isAuthor,
+  ownsPost,
+  ownsPostOfComment,
+} from "../middleware/authorisation.js";
 
-// TODO: will need verification for both routers.
-// need to verify logged in, correct user, and in
-// the case of the author that comments they are editing
-// are only under their own post if they don't own them
+const authorRouter = Router();
 
 // post a post
-authorRouter.post("/posts", authorController.createPost);
+authorRouter.post(
+  "/posts",
+  passport.authenticate("jwt", { session: false }),
+  isAuthor,
+  authorController.createPost,
+);
 // edit a post
-authorRouter.put("/posts/:id", authorController.editPost);
+authorRouter.put(
+  "/posts/:id",
+  passport.authenticate("jwt", { session: false }),
+  isAuthor,
+  ownsPost,
+  authorController.editPost,
+);
 // delete a post
-authorRouter.delete("/posts/:id", authorController.deletePost);
+authorRouter.delete(
+  "/posts/:id",
+  passport.authenticate("jwt", { session: false }),
+  isAuthor,
+  ownsPost,
+  authorController.deletePost,
+);
 
 // edit a comment under your post
-authorRouter.put("/comments/:id", userController.editComment);
+authorRouter.put(
+  "/comments/:id",
+  passport.authenticate("jwt", { session: false }),
+  isAuthor,
+  ownsPostOfComment,
+  userController.editComment,
+);
 // delete a comment under your post
-authorRouter.delete("/comments/:id", userController.deleteComment);
+authorRouter.delete(
+  "/comments/:id",
+  passport.authenticate("jwt", { session: false }),
+  isAuthor,
+  ownsPostOfComment,
+  userController.deleteComment,
+);
 
 export default authorRouter;

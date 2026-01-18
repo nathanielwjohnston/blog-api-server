@@ -1,7 +1,8 @@
 import { Router } from "express";
+import passport from "passport";
 
 import * as controller from "../controllers/userController.js";
-import passport from "passport";
+import { authoriseComment } from "../middleware/authorisation.js";
 
 const userRouter = Router();
 
@@ -23,12 +24,14 @@ userRouter.post(
 userRouter.put(
   "/comments/:id",
   passport.authenticate("jwt", { session: false }),
+  authoriseComment,
   controller.editComment
 );
 // delete a comment
 userRouter.delete(
   "/comments/:id",
   passport.authenticate("jwt", { session: false }),
+  authoriseComment,
   controller.deleteComment
 );
 
