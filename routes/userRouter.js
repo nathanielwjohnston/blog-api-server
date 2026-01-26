@@ -8,6 +8,15 @@ const userRouter = Router();
 
 userRouter.post("/register", controller.register);
 userRouter.post("/login", controller.login);
+// Check if the user is loggen in
+// TODO: should return 200 or other if fails auth
+userRouter.get(
+  "/user",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    return res.status(200);
+  },
+);
 
 // get posts
 userRouter.get("/posts", controller.getPosts);
@@ -18,21 +27,21 @@ userRouter.get("/posts/:id", controller.getPost);
 userRouter.post(
   "/comments",
   passport.authenticate("jwt", { session: false }),
-  controller.createComment
+  controller.createComment,
 );
 // update a comment
 userRouter.put(
   "/comments/:id",
   passport.authenticate("jwt", { session: false }),
   authoriseComment,
-  controller.editComment
+  controller.editComment,
 );
 // delete a comment
 userRouter.delete(
   "/comments/:id",
   passport.authenticate("jwt", { session: false }),
   authoriseComment,
-  controller.deleteComment
+  controller.deleteComment,
 );
 
 export default userRouter;

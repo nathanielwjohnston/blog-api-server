@@ -1,6 +1,8 @@
 import "dotenv/config";
 
 import express from "express";
+import cors from "cors";
+
 const app = express();
 
 import passport from "passport";
@@ -9,6 +11,8 @@ import "./config/jwtStrategy.js";
 
 import userRouter from "./routes/userRouter.js";
 import authorRouter from "./routes/authorRouter.js";
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

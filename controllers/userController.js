@@ -16,7 +16,7 @@ export async function register(req, res, next) {
       },
     });
     const { hash, ...newUser } = user;
-    return res.json(newUser);
+    return res.json({ message: "Register success" }, newUser);
   } catch (error) {
     next(error);
   }
