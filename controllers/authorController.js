@@ -2,6 +2,25 @@ import { prisma } from "../lib/prisma.js";
 
 // TODO: test functions
 
+export async function getPosts(req, res, next) {
+  const authorId = req.user.id;
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        authorId: authorId,
+      },
+      include: {
+        author: true,
+        comments: true,
+      },
+    });
+    return res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function createPost(req, res, next) {
   const post = req.body;
 

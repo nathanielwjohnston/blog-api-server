@@ -11,6 +11,13 @@ import {
 
 const authorRouter = Router();
 
+// get all (incl. not published) posts for specific author
+authorRouter.get(
+  "/posts",
+  // passport.authenticate("jwt", { session: false }),
+  // isAuthor,
+  authorController.getPosts,
+);
 // post a post
 authorRouter.post(
   "/posts",
