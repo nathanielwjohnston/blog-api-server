@@ -14,14 +14,18 @@ opts.secretOrKey = process.env.JWT_SECRET;
 // the id straight from it with the secret from above. This is why
 // you do not need to check password hash like with the local strategy
 const strategy = new JwtStrategy(opts, async (jwt_payload, done) => {
+  // TODO: try/catch?
+  console.log("strategy");
   const user = await prisma.user.findUnique({
     where: {
       id: jwt_payload.id,
     },
   });
   if (user) {
+    console.log("Found user");
     return done(null, user);
   } else {
+    console.log("Could not find user");
     return done(null, false);
   }
 });

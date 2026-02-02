@@ -37,11 +37,17 @@ export async function login(req, res, next) {
     opts.expiresIn = 600;
     const secret = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, opts);
+    console.log(token);
     return res.json({ message: "Auth success", token });
   })(req, res, next);
 }
 
 export async function getPosts(req, res, next) {
+  // TODO: should i bring the authors here?
+  // TODO: should filter by published here? or do on frontend?
+  // would mean i have to have another function
+  // on the author side showing all posts even unpublished
+  // that THEY have access to. Should probably do that
   try {
     const posts = await prisma.post.findMany();
     return res.json(posts);
@@ -53,6 +59,9 @@ export async function getPosts(req, res, next) {
 
 export async function getPost(req, res, next) {
   const { id } = req.params;
+
+  // TODO: need to get comments
+  // TODO: bring author too?
 
   try {
     const post = await prisma.post.findUnique({

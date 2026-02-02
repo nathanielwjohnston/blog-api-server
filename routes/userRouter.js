@@ -10,11 +10,18 @@ userRouter.post("/register", controller.register);
 userRouter.post("/login", controller.login);
 // Check if the user is loggen in
 // TODO: should return 200 or other if fails auth
+// Still only works rarely, mostly just returns a 401
 userRouter.get(
   "/user",
+  (req, res, next) => {
+    console.log(req.headers);
+    next();
+  },
+  // TODO: check to see what is coming from the frontend
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => {
-    return res.status(200);
+    console.log("authenticated");
+    return res.json({ message: "Auth success" });
   },
 );
 

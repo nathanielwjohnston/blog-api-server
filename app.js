@@ -12,17 +12,24 @@ import "./config/jwtStrategy.js";
 import userRouter from "./routes/userRouter.js";
 import authorRouter from "./routes/authorRouter.js";
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
 
+console.log("app");
+
 app.use("/user-api", userRouter);
 app.use("/author-api", authorRouter);
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 app.listen(port, (error) => {
   if (error) throw error;
