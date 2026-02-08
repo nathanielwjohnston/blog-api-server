@@ -21,7 +21,7 @@ userRouter.get(
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => {
     console.log("authenticated");
-    return res.json({ message: "Auth success" });
+    return res.json({ message: "Auth success", user: req.user });
   },
 );
 

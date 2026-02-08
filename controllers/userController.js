@@ -38,7 +38,7 @@ export async function login(req, res, next) {
     const secret = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, opts);
     console.log(token);
-    return res.json({ message: "Auth success", token });
+    return res.json({ message: "Auth success", token, user });
   })(req, res, next);
 }
 
