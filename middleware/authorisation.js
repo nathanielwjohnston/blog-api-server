@@ -84,3 +84,24 @@ export async function ownsPostOfComment(req, res, next) {
     next(error);
   }
 }
+
+export async function checkTokenBlacklist(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const [, token] = authHeader.split(" ");
+  console.log("token " + token);
+  try {
+    const checkIfBlacklisted = await prisma.blacklistedToken.findUnique({
+      where: {
+        tokenId: token,
+      },
+    });
+    if (checkIfBlacklisted) {
+      console.log("Blacklisted token");
+      return res.json({ message: "Blacklisted token" });
+    }
+  } catch (error) {
+    next(error);
+  }
+
+  next();
+}

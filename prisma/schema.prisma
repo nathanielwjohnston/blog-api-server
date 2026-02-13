@@ -56,3 +56,7 @@ enum Role {
   USER
   AUTHOR
 }
+
+model BlacklistedToken {
+  tokenId String @unique
+}

@@ -1,23 +1,24 @@
 import { Router } from "express";
 import passport from "passport";
 
+import { prisma } from "../lib/prisma.js";
+
 import * as controller from "../controllers/userController.js";
-import { authoriseComment } from "../middleware/authorisation.js";
+import {
+  authoriseComment,
+  checkTokenBlacklist,
+} from "../middleware/authorisation.js";
 
 const userRouter = Router();
 
 userRouter.post("/register", controller.register);
 userRouter.post("/login", controller.login);
-// Check if the user is loggen in
-// TODO: should return 200 or other if fails auth
-// Still only works rarely, mostly just returns a 401
+userRouter.post("/logout", controller.logout);
+
+// Check if the user is logged in
 userRouter.get(
   "/user",
-  (req, res, next) => {
-    console.log(req.headers);
-    next();
-  },
-  // TODO: check to see what is coming from the frontend
+  checkTokenBlacklist,
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => {
     console.log("authenticated");
@@ -33,12 +34,14 @@ userRouter.get("/posts/:id", controller.getPost);
 // leave a comment
 userRouter.post(
   "/comments",
+  checkTokenBlacklist,
   passport.authenticate("jwt", { session: false }),
   controller.createComment,
 );
 // update a comment
 userRouter.put(
   "/comments/:id",
+  checkTokenBlacklist,
   passport.authenticate("jwt", { session: false }),
   authoriseComment,
   controller.editComment,
@@ -46,6 +49,7 @@ userRouter.put(
 // delete a comment
 userRouter.delete(
   "/comments/:id",
+  checkTokenBlacklist,
   passport.authenticate("jwt", { session: false }),
   authoriseComment,
   controller.deleteComment,

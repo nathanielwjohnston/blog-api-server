@@ -37,9 +37,36 @@ export async function login(req, res, next) {
     opts.expiresIn = 600;
     const secret = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, opts);
-    console.log(token);
     return res.json({ message: "Auth success", token, user });
   })(req, res, next);
+}
+
+export async function logout(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const [, token] = authHeader.split(" ");
+
+  try {
+    const checkIfBlacklisted = await prisma.blacklistedToken.findUnique({
+      where: {
+        tokenId: token,
+      },
+    });
+
+    if (checkIfBlacklisted) {
+      return res.sendStatus(204);
+    }
+
+    // Currently have this set up to blacklist this token when the user logs out
+    // and for a new token to be created on the next login
+    const blacklistedToken = await prisma.blacklistedToken.create({
+      data: { tokenId: token },
+    });
+
+    console.log(blacklistedToken);
+    res.json({ message: "Log out success" });
+  } catch (error) {
+    next(error);
+  }
 }
 
 export async function getPosts(req, res, next) {
