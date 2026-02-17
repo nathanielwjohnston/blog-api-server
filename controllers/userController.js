@@ -117,12 +117,26 @@ export async function getPost(req, res, next) {
 }
 
 export async function createComment(req, res, next) {
-  const comment = req.body;
-  console.log(comment);
+  let { commentContent, postId } = req.body;
+  const userId = req.user.id;
   try {
     const newComment = await prisma.comment.create({
       data: {
-        ...comment,
+        content: commentContent,
+        post: {
+          connect: {
+            id: parseInt(postId),
+          },
+        },
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+      include: {
+        post: true,
+        user: true,
       },
     });
     return res.json(newComment);
@@ -141,6 +155,10 @@ export async function editComment(req, res, next) {
       },
       data: {
         ...comment,
+      },
+      include: {
+        user: true,
+        post: true,
       },
     });
     return res.json(updatedComment);
