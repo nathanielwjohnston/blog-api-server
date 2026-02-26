@@ -1,6 +1,25 @@
 import { prisma } from "../lib/prisma.js";
+import passport from "passport";
+import jwt from "jsonwebtoken";
 
 // TODO: test functions
+
+export async function login(req, res, next) {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.status(401).json({ error: err.message });
+    const opts = {};
+    opts.expiresIn = 600;
+    const secret = process.env.JWT_SECRET;
+    const token = jwt.sign({ id: user.id }, secret, opts);
+    console.log(user);
+    if (user.role === "AUTHOR") {
+      return res.json({ message: "Auth success", token, user });
+    } else {
+      return res.status(401).json({ error: err.message });
+    }
+  })(req, res, next);
+}
 
 export async function getPosts(req, res, next) {
   const authorId = req.user.id;

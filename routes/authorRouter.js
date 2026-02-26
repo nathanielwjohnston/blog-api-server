@@ -11,11 +11,24 @@ import {
 
 const authorRouter = Router();
 
+authorRouter.post("/login", authorController.login);
+
+// Check if the user is logged in
+authorRouter.get(
+  "/author",
+  passport.authenticate("jwt", { session: false }),
+  isAuthor,
+  (req, res, next) => {
+    console.log("authenticated");
+    return res.json({ message: "Auth success", user: req.user });
+  },
+);
+
 // get all (incl. not published) posts for specific author
 authorRouter.get(
   "/posts",
-  // passport.authenticate("jwt", { session: false }),
-  // isAuthor,
+  passport.authenticate("jwt", { session: false }),
+  isAuthor,
   authorController.getPosts,
 );
 // post a post
