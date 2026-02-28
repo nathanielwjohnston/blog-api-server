@@ -31,6 +31,13 @@ authorRouter.get(
   isAuthor,
   authorController.getPosts,
 );
+authorRouter.get(
+  "/posts/:id",
+  passport.authenticate("jwt", { session: false }),
+  isAuthor,
+  authorController.getPost,
+);
+
 // post a post
 authorRouter.post(
   "/posts",

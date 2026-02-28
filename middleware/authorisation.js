@@ -72,6 +72,11 @@ export async function ownsPostOfComment(req, res, next) {
         post: true,
       },
     });
+
+    console.log(comment.post.authorId);
+    console.log(comment.userId);
+    console.log(userId);
+
     if (comment.post.authorId === parseInt(userId)) {
       return next();
     } else if (comment.userId === parseInt(userId)) {

@@ -90,6 +90,9 @@ export async function getPosts(req, res, next) {
   }
 }
 
+// TODO: shouldn't be able to get post here
+// if not published as this is only on the user's
+// side
 export async function getPost(req, res, next) {
   const { id } = req.params;
 

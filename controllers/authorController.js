@@ -40,6 +40,32 @@ export async function getPosts(req, res, next) {
   }
 }
 
+export async function getPost(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        author: {
+          include: {
+            user: true,
+          },
+        },
+        comments: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+    console.log(post);
+    return res.json(post);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function createPost(req, res, next) {
   const post = req.body;
 
@@ -65,6 +91,18 @@ export async function editPost(req, res, next) {
       },
       data: {
         ...post,
+      },
+      include: {
+        author: {
+          include: {
+            user: true,
+          },
+        },
+        comments: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
     return res.json(editedPost);
