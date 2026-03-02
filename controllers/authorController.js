@@ -69,10 +69,17 @@ export async function getPost(req, res, next) {
 export async function createPost(req, res, next) {
   const post = req.body;
 
+  const userId = req.user.id;
+
   try {
     const newPost = await prisma.post.create({
       data: {
         ...post,
+        author: {
+          connect: {
+            id: parseInt(userId),
+          },
+        },
       },
     });
     return res.json(newPost);
