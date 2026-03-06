@@ -73,10 +73,6 @@ export async function ownsPostOfComment(req, res, next) {
       },
     });
 
-    console.log(comment.post.authorId);
-    console.log(comment.userId);
-    console.log(userId);
-
     if (comment.post.authorId === parseInt(userId)) {
       return next();
     } else if (comment.userId === parseInt(userId)) {
@@ -93,7 +89,6 @@ export async function ownsPostOfComment(req, res, next) {
 export async function checkTokenBlacklist(req, res, next) {
   const authHeader = req.headers["authorization"];
   const [, token] = authHeader.split(" ");
-  console.log("token " + token);
   try {
     const checkIfBlacklisted = await prisma.blacklistedToken.findUnique({
       where: {
@@ -101,7 +96,6 @@ export async function checkTokenBlacklist(req, res, next) {
       },
     });
     if (checkIfBlacklisted) {
-      console.log("Blacklisted token");
       return res.json({ message: "Blacklisted token" });
     }
   } catch (error) {

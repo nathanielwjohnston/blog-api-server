@@ -2,8 +2,6 @@ import { prisma } from "../lib/prisma.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 
-// TODO: test functions
-
 export async function login(req, res, next) {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) return next(err);
@@ -12,7 +10,6 @@ export async function login(req, res, next) {
     opts.expiresIn = 600;
     const secret = process.env.JWT_SECRET;
     const token = jwt.sign({ id: user.id }, secret, opts);
-    console.log(user);
     if (user.role === "AUTHOR") {
       return res.json({ message: "Auth success", token, user });
     } else {
@@ -59,7 +56,6 @@ export async function getPost(req, res, next) {
         },
       },
     });
-    console.log(post);
     return res.json(post);
   } catch (error) {
     next(error);

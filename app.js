@@ -24,8 +24,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
 
-console.log("app");
-
 app.use("/user-api", userRouter);
 app.use("/author-api", authorRouter);
 

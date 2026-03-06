@@ -61,9 +61,7 @@ export async function logout(req, res, next) {
     const blacklistedToken = await prisma.blacklistedToken.create({
       data: { tokenId: token },
     });
-
-    console.log(blacklistedToken);
-    res.json({ message: "Log out success" });
+    res.json({ token: blacklistedToken, message: "Log out success" });
   } catch (error) {
     next(error);
   }
@@ -85,20 +83,16 @@ export async function getPosts(req, res, next) {
     });
     return res.json(posts);
   } catch (error) {
-    // TODO: is this the right way to go about this?
     next(error);
   }
 }
 
-// TODO: shouldn't be able to get post here
-// if not published as this is only on the user's
-// side
 export async function getPost(req, res, next) {
   const { id } = req.params;
 
   try {
     const post = await prisma.post.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: parseInt(id), published: true },
       include: {
         author: {
           include: {
@@ -112,7 +106,6 @@ export async function getPost(req, res, next) {
         },
       },
     });
-    console.log(post);
     return res.json(post);
   } catch (error) {
     next(error);

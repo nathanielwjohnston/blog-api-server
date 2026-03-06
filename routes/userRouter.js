@@ -21,7 +21,6 @@ userRouter.get(
   checkTokenBlacklist,
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => {
-    console.log("authenticated");
     return res.json({ message: "Auth success", user: req.user });
   },
 );

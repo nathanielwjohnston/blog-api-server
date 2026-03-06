@@ -19,7 +19,6 @@ authorRouter.get(
   passport.authenticate("jwt", { session: false }),
   isAuthor,
   (req, res, next) => {
-    console.log("authenticated");
     return res.json({ message: "Auth success", user: req.user });
   },
 );
