@@ -14,8 +14,11 @@ import authorRouter from "./routes/authorRouter.js";
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: true,
+    origin: [
+      "http://localhost:5173",
+      "https://blog-user-frontend.vercel.app",
+      "https://blog-author-frontend.vercel.app",
+    ],
   }),
 );
 
